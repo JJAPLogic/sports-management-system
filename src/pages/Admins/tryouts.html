@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Try Out</title>
+    <link rel="stylesheet" href="../../Styles/tryouts.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div class="menu">
+        <a href=""><img src="../../Assets/images/Logo/umdc.png" alt=""></a>
+        <div class="menuNav">
+            <button class="menuButton" onclick="window.location.href = 'dashboard.html'">
+                <img src="../../Assets/images/Icons/dashboard.png" alt="" title="DashBoard">
+            </button>
+            <button class="menuButton" style="border: solid 3.5px white; border-radius: 5px;">
+                <img src="../../Assets/images/Icons/tryout.png" alt="">
+            </button>
+            <button class="menuButton" onclick="window.location.href = 'coaches.html'" title="Coaches">
+                <img src="../../Assets/images/Icons/coach.png" alt="">
+            </button>
+            <button class="menuButton" onclick="window.location.href = 'message.html'" title="message">
+                <img src="../../Assets/images/Icons/message.png" alt="">
+            </button>
+        </div>
+        <div class="extras">
+            V1.0.0
+        </div>
+    </div>
+    <div class="content">
+
+        <div class="topBar">
+            <div class="profileContainer">
+                <div class="imageBorder">
+                    <img src="../../Assets/images/Icons/portrait.png" alt="">
+                </div>
+                <p>cdadasd-34dca-dsa</p>
+            </div>
+            <div class="topExtraContainer">
+                <h2><span style="color: maroon;">UM</span><span style="color: goldenrod;">DC</span> Sports Management
+                    System</h2>
+            </div>
+            <div class="miscContainer">
+                <div class="notifContainer">
+                    <img src="../../Assets/images/Icons/menuburger.png" alt="">
+                </div>
+                <div class="logoutContainer">
+                    <img src="../../Assets/images/Icons/logout.png" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="tableData">
+            <div class="fields">
+                <p class="name_Field">
+                    Name
+                </p>
+                <p class="email_Field">
+                    Email
+                </p>
+                <p class="studentID_Field">
+                    Code
+                </p>
+                <p class="category_Field">
+                    Category
+                </p>
+                <p class="birthDate_Field">
+                    Birth Date
+                </p>
+                <p class="statusField">
+                    Status
+                </p>
+            </div>
+            <div class="table" id="table">
+                <!-- <div class="rows">
+                    <p class="name_Row">
+                        Jharold Jay A. Padayao
+                    </p>
+                    <p class="email_Row">
+                        jharoldpadayaodev02@gmail.com
+                    </p>
+                    <p class="studentID_Row">
+                        65306
+                    </p>
+                    <p class="category_Row">
+                        Basket Ball
+                    </p>
+                    <p class="birthDate_Row">
+                        10/29/2005
+                    </p>
+                    <div class="status_Row">
+                        <p>Pass</p>
+                        <div class="btnContainer">
+                            <button style="background-color: red;">Decline</button>
+                            <button style="background-color: rgb(18, 219, 18);">Accept</button>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="infoContainer">
+            <p>University of Mindanao Digos College – Sports Department | All Rights Reserved © 2025</p>
+            <p>Version 1.0.0 | Developed by UMDC IT Department</p>
+        </div>
+    </div>
+
+    <form class="popUpContainer" id="popUp">
+    </form>
+    <script type="module">
+        import { pending } from '../../Data/dataScript.js';
+
+        function reloadTable() {
+            document.getElementById('table').innerHTML = '';
+
+            pending.forEach(p => {
+                const row = document.createElement('div');
+                row.classList.add('rows');
+                row.innerHTML = `
+                    <p class="name_Row">${p.fullName}</p>
+                    <p class="email_Row">${p.email}</p>
+                    <p class="studentID_Row">${p.studentID}</p>
+                    <p class="category_Row">${p.category}</p>
+                    <p class="birthDate_Row">${p.birthDate}</p>
+                    <div class="status_Row">
+                        <p>${p.Status}</p>
+                        <div class="btnContainer">
+                            <button style="background-color: red;" onclick="popUp('${p.email}')">Decline</button>
+                            <button style="background-color: rgb(18, 219, 18);" onclick="approve('${p.studentID}')">Accept</button>
+                            </div>
+                        </div>`
+                table.appendChild(row);
+            });
+        }
+
+        window.approve = function (code) {
+            const result = pending.find(p => p.studentID == code);
+
+            if (!result) {
+                console.error("Student not found!");
+                return;
+            }
+            const formData = new FormData();
+            formData.append("fullName", result.fullName);
+            formData.append("email", result.email);
+            formData.append("category", result.category);
+            formData.append("code", result.studentID);
+            formData.append("birthDate", result.birthDate);
+            fetch('../../Server/addAthletes.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data == "Success") {
+                        Swal.fire({
+                            title: "Email Sent!",
+                            text: "Student Has Been Removed Successfuly",
+                            icon: "success"
+                        });
+                        console.log(data);
+                        window.location.href = "";
+                    } else {
+                        console.log(data);
+                    }
+                })
+        }
+
+        window.popUp = function (email) {
+            document.getElementById('popUp').style.display = 'flex';
+            document.getElementById('popUp').innerHTML = `<div class="popUp">
+                <input type="hidden" id="emailHidden" name="email" value="${email}"> 
+            <div class="textHolderPopUp">
+                <h1>Are you sure?</h1>
+            </div>
+            <div class="inputContainerPopUp">
+                <textarea id="reason" placeholder="Declined Reason" name="text" required>We appreciate your interest in joining the UMDC Sports Department and for taking the time to submit your application. After a thorough review by the department and administrative office, we regret to inform you that your application has been declined at this time.
+
+This decision was made based on one or more administrative or academic concerns, such as low academic standing, a blocked student portal, or an existing disciplinary record. We encourage you to address these matters and reapply in the future once the issues have been resolved.
+
+We value your enthusiasm for representing our institution and wish you the best in your academic and athletic pursuits.</textarea>
+            </div>
+            <div class="btnContainerPopUp"><button>Confirm</button></div>
+        </div>`
+        };
+
+        document.getElementById('popUp').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            fetch('../../Data/emailconfig.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    if (data === "Success") {
+                        formData.append("Location", "tryout");
+                        document.getElementById('popUp').innerHTML = "";
+                        document.getElementById('popUp').style.display = "none"
+
+                        fetch('../../Server/deleteData.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+                                Swal.fire({
+                                    title: "Email Sent!",
+                                    text: "Student Has Been Approved Successfuly",
+                                    icon: "success"
+                                });
+                                console.log(data);
+                                window.location.href = "";
+                            })
+                            .catch(Error => {
+                                console.log(Error);
+
+                            })
+                    }
+                })
+                .catch(Error => {
+                    console.log(Error);
+                })
+        })
+
+        function reloadData() {
+            const formData = new FormData(this);
+            fetch('../../Server/fetchPending.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    pending.length = 0;
+                    pending.push(...data);
+                    reloadTable();
+                })
+                .catch(Error => {
+                    console.log(Error);
+                })
+        }
+
+        window.onload = reloadData();
+        window.popUp;
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DashBoard</title>
+    <link rel="stylesheet" href="../../Styles/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <div class="menu">
+        <a href=""><img src="../../Assets/images/Logo/umdc.png" alt=""></a>
+        <div class="menuNav">
+            <button class="menuButton" style="border: solid 3.5px white; border-radius: 5px;">
+                <img src="../../Assets/images/Icons/dashboard.png" alt="" title="DashBoard">
+            </button>
+            <button class="menuButton" onclick="window.location.href = 'tryouts.html'" title="Try outs">
+                <img src="../../Assets/images/Icons/tryout.png" alt="">
+            </button>
+            <button class="menuButton" onclick="window.location.href = 'coaches.html'" title="Coaches">
+                <img src="../../Assets/images/Icons/coach.png" alt="">
+            </button>
+            <button class="menuButton" onclick="window.location.href = 'message.html'" title="message">
+                <img src="../../Assets/images/Icons/message.png" alt="">
+            </button>
+        </div>
+        <div class="extras">
+            V1.0.0
+        </div>
+    </div>
+    <div class="content">
+
+        <div class="topBar">
+            <div class="profileContainer">
+                <div class="imageBorder">
+                    <img src="../../Assets/images/Icons/portrait.png" alt="">
+                </div>
+                <p>cdadasd-34dca-dsa</p>
+            </div>
+            <div class="topExtraContainer">
+                <h2><span style="color: maroon;">UM</span><span style="color: goldenrod;">DC</span> Sports Management
+                    System</h2>
+            </div>
+            <div class="miscContainer">
+                <div class="notifContainer">
+                    <img src="../../Assets/images/Icons/menuburger.png" alt="">
+                </div>
+                <div class="logoutContainer">
+                    <img src="../../Assets/images/Icons/logout.png" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="display">
+            <div class="card">
+                <p>TOTAL MEMBERS</p>
+                <h2><span style="color: rgb(43, 190, 43);" id="totalMembers">0</span></h2>
+            </div>
+            <div class="card">
+                <p>TOTAL ACTIVE ATHLETES</p>
+                <h2><span style="color: red;" id="totalActiveAthletes">0</span></h2>
+            </div>
+            <div class="card">
+                <p>TOTAL COACHES</p>
+                <h2><span style="color: rgb(161, 22, 241);" id="totalCoaches">0</span></h2>
+            </div>
+        </div>
+
+        <div class="tableDisplay">
+            <div class="filterContainer">
+                <div class="searchContainer">
+                    <input type="text" name="" id="Search" placeholder="🔍︎ Search">
+                    <p id="resultBox"></p>
+                </div>
+                <div class="controlContainer">
+                    <select class="filterSelection">
+                        <option value="">No Filter</option>
+                        <option value="">Basket Ball</option>
+                        <option value="">Volley Ball</option>
+                        <option value="">Takraw</option>
+                        <option value="">Taekwando</option>
+                    </select>
+                    <a href="../../Data/" class="downloadButton" alt="" download>Download</a>
+                    <button class="addButton">✚ Add Member</button>
+                </div>
+            </div>
+            <div class="tableFields">
+                <p class="name_Field">
+                    Name
+                </p>
+                <p class="email_Field">
+                    Email
+                </p>
+                <p class="status_Field">
+                    Status
+                </p>
+                <p class="category_Field">
+                    Category
+                </p>
+                <p class="code_Field">
+                    Code
+                </p>
+                <p class="birthDate_Field">
+                    Birth Date
+                </p>
+                <p class="games_Field">
+                    Total Games
+                </p>
+                <p class="performance_Field">
+                    Win Rate
+                </p>
+            </div>
+
+            <div class="table" id="table">
+                <!-- <div class="row">
+                    <p class="name_Row">
+                        Jharold Jay A. Padayao
+                    </p>
+                    <p class="email_Row">
+                        j.padayao.65306.dc@umindanao.edu.ph
+                    </p>
+                    <p class="status_Row">
+                        Active
+                    </p>
+                    <p class="category_Row">
+                        Basket Ball
+                    </p>
+                    <p class="code_Row">
+                        65306
+                    </p>
+                    <p class="birthDate_Row">
+                        10/29/2005
+                    </p>
+                    <p class="games_Row">
+                        10/29/2005
+                    </p>
+                    <p class="performance_Row">
+                        87%
+                        <select name="" id="rowOption">
+                            <option value="" disabled selected hidden>⋮</option>
+                            <option value="" title="Edit">✎</option>
+                            <option value="" title="Delete">🗑</option>
+                        </select>
+                    </p>
+                </div> -->
+            </div>
+
+            <div class="infoContainer">
+                <p>University of Mindanao Digos College – Sports Department | All Rights Reserved © 2025</p>
+                <p>Version 1.0.0 | Developed by UMDC IT Department</p>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="../../Data/dataScript.js"></script>
+    <script type="module">
+        import { members } from '../../Data/dataScript.js';
+
+        function reloadTable() {
+            document.getElementById('table').innerHTML = '';
+
+            members.forEach(m => {
+                const row = document.createElement('div');
+                row.classList.add('row');
+                row.innerHTML = `
+                    <p class="name_Row">${m.name}</p>
+                    <p class="email_Row">${m.email}</p>
+                    <p class="status_Row">${m.status}</p>
+                    <p class="category_Row">${m.category}</p>
+                    <p class="code_Row">${m.code}</p>
+                    <p class="birthDate_Row">${m.birthDate}</p>
+                    <p class="games_Row">${m.games}</p>
+                    <p class="performance_Row">${m.performance}%
+                        <select name="" id="rowOption" onchange="handleOptionChange(this, '${m.email}')">
+                            <option value="" disabled selected hidden>⋮</option>
+                            <option value=")" title="Edit">✎</option>
+                            <option value="delete" title="Delete">🗑</option>
+                        </select>
+                    </p>`;
+                table.appendChild(row);
+                document.getElementById('totalMembers').innerText = members.length;
+                document.getElementById('totalActiveAthletes').innerText = members.filter(m => m.status === "Active").length;
+            });
+        }
+
+        window.handleOptionChange = function (select, email) {
+            const action = select.value;
+            select.selectedIndex = 0;
+            
+            if (action == "delete") {
+                console.log("success");
+                
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append("Location", "dashboard");
+                fetch('../../Server/deleteData.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        Swal.fire({
+                            title: "Email Sent!",
+                            text: "Student Has Been Removed Successfuly",
+                            icon: "success"
+                        });
+                        console.log(data);
+                        setTimeout(() => {
+                            window.location.href = "";
+                        }, 500);
+                    })
+                    .catch(Error => {
+                        console.log(Error);
+
+                    })
+            } else {
+
+            }
+        }
+
+        function reloadData() {
+            const formData = new FormData(this);
+            fetch('../../Server/fetchData.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    members.length = 0;
+                    members.push(...data);
+                    reloadTable();
+                })
+                .catch(Error => {
+                    console.log(Error);
+
+                })
+        }
+
+        document.getElementById('Search').addEventListener('keypress', (e) => {
+            if (e.key === "Enter") {
+                let keyWord = document.getElementById('Search').value;
+                const resultBox = document.getElementById("resultBox");
+
+
+                if (keyWord.trim()) {
+                    const results = members.filter(m => m.name.toLowerCase().includes(keyWord));
+                    if (results.length === 0) {
+                        resultBox.textContent = "No results found.";
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
+        });
+
+        window.onload = reloadData();
+    </script>
+</body>
+
+</html>

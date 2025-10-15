@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../Styles/register.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <h1>Register For TryOut</h1>
+    <form action="" id="register">
+        <div class="InputContainer1">
+            <input type="text" name="firstName" placeholder="First Name" required>
+            <input type="text" maxlength="1" name="middleInitial" placeholder="Middle Initial" required>
+            <input type="text" name="lastName" placeholder="Last Name" required>
+        </div>
+        <div class="InputContainer2">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="number" name="studentID" placeholder="Student ID" required>
+            <select name="category" required>
+                <option value="" disabled selected hidden>Select Sport</option>
+                <option value="BaseketBall">Basket Ball</option>
+                <option value="Taekwando">Taekwando</option>
+                <option value="Takraw">Takraw</option>
+                <option value="VolleyBall">Volley Ball</option>
+            </select>
+            <input type="date" name="birthDate" required>
+        </div>
+        <div class="submitContainer">
+            <p id="response"></p>
+            <button>Submit</button>
+        </div>
+    </form>
+    <footer></footer>
+    <script>
+        document.getElementById('register').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            fetch('../../Server/register.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data == "Success") {
+                        Swal.fire({
+                            title: "Good job!",
+                            text: "You clicked the button!",
+                            icon: "success"
+                        });
+                        document.getElementById('response').innerText = data;
+                        console.log(data);
+                        setTimeout(() => {
+                            window.location.href = "";
+                        }, 500);
+                    } else {
+                        console.log(data);
+                        document.getElementById('response').innerText = data;
+                    }
+                })
+        })
+    </script>
+</body>
+
+</html>
