@@ -114,22 +114,23 @@
         import { pending } from '../../Data/dataScript.js';
 
         function reloadTable() {
+            const result = pending.filter(p => p.Status == "Passed");
             document.getElementById('table').innerHTML = '';
 
-            pending.forEach(p => {
+            result.forEach(r => {
                 const row = document.createElement('div');
                 row.classList.add('rows');
                 row.innerHTML = `
-                    <p class="name_Row">${p.fullName}</p>
-                    <p class="email_Row">${p.email}</p>
-                    <p class="studentID_Row">${p.studentID}</p>
-                    <p class="category_Row">${p.category}</p>
-                    <p class="birthDate_Row">${p.birthDate}</p>
+                    <p class="name_Row">${r.fullName}</p>
+                    <p class="email_Row">${r.email}</p>
+                    <p class="studentID_Row">${r.studentID}</p>
+                    <p class="category_Row">${r.category}</p>
+                    <p class="birthDate_Row">${r.birthDate}</p>
                     <div class="status_Row">
-                        <p>${p.Status}</p>
+                        <p>${r.Status}</p>
                         <div class="btnContainer">
-                            <button style="background-color: red;" onclick="popUp('${p.email}')">Decline</button>
-                            <button style="background-color: rgb(18, 219, 18);" onclick="approve('${p.studentID}')">Accept</button>
+                            <button style="background-color: red;" onclick="popUp('${r.email}')">Decline</button>
+                            <button style="background-color: rgb(18, 219, 18);" onclick="approve('${r.studentID}')">Accept</button>
                             </div>
                         </div>`
                 table.appendChild(row);
@@ -211,11 +212,13 @@ We value your enthusiasm for representing our institution and wish you the best 
                             .then(data => {
                                 Swal.fire({
                                     title: "Email Sent!",
-                                    text: "Student Has Been Approved Successfuly",
+                                    text: "Student Has Been Removed Successfuly",
                                     icon: "success"
                                 });
                                 console.log(data);
-                                window.location.href = "";
+                                setTimeout(() => {
+                                    window.location.href = "";
+                                }, 500);
                             })
                             .catch(Error => {
                                 console.log(Error);

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coaches</title>
     <link rel="stylesheet" href="../../Styles/pendingList.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -16,7 +17,7 @@
             <button class="menuButton" title="Try outs" style="border: solid 3.5px white; border-radius: 5px;">
                 <img src="../../Assets/images/Icons/tryout.png" alt="">
             </button>
-            <button class="menuButton"  onclick="window.location.href = 'message.html'">
+            <button class="menuButton" onclick="window.location.href = 'message.html'">
                 <img src="../../Assets/images/Icons/message.png" alt="">
             </button>
         </div>
@@ -48,7 +49,34 @@
         </div>
 
         <div class="tryoutPending">
-            
+            <div class="controlsContainer">
+                <div class="searchContainer">
+                    <input type="search" id="search" placeholder="Search">
+                </div>
+                <div class="filterContainer">
+
+                </div>
+            </div>
+            <div id="listContainer">
+                <!-- <div class="batchContainer">
+                    <div class="textHolder">
+                        <p>Batch 1</p>
+                        <p>Date</p>
+                    </div>
+                    <div class="userContainer">
+                        <div class="rows">
+                            <p>Jharold Jay A. PAdayao</p>
+                            <p>jharoldpadayaodev02@gmail.com</p>
+                            <p>65306</p>
+                            <p>category</p>
+                            <p>birthDate</p>
+                            <p>Pending</p>
+                            <button>Fail</button>
+                            <button>Pass</button>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
         </div>
 
         <div class="infoContainer">
@@ -56,6 +84,189 @@
             <p>Version 1.0.0 | Developed by UMDC IT Department</p>
         </div>
     </div>
+    <form class="popUpContainer" id="popUp">
+    </form>
+    <script type="module">
+        import { pending } from '../../Data/dataScript.js';
+        function updateList() {
+            const result = pending.filter(p => p.Status === "Pending");
+
+            const list = document.getElementById('listContainer');
+            list.innerHTML = "";
+
+            let batchContainer;
+            let batchCount = 0;
+
+            let userContainer;
+
+            result.forEach((r, index) => {
+                if (index % 20 === 0) {
+                    batchCount++;
+                    batchContainer = document.createElement('div');
+                    batchContainer.classList.add('batchContainer');
+                    batchContainer.id = `batchContainer${batchCount}`;
+                    batchContainer.innerHTML = `<div class="textHolder">
+                        <p>Batch ${batchCount}</p>
+                        <p>Date</p>
+                    </div>`;
+                    userContainer = document.createElement('div');
+                    userContainer.classList.add(`userContainer`);
+
+                    batchContainer.appendChild(userContainer);
+                    list.appendChild(batchContainer);
+                }
+
+                let row = document.createElement('div');
+                row.classList.add('rows');
+                row.innerHTML = `<p>${r.fullName}</p>
+                            <p>${r.email}</p>
+                            <p>${r.studentID}</p>
+                            <p>${r.category}</p>
+                            <p>${r.birthDate}</p>
+                            <p>${r.Status}</p>
+                            <button onclick="popUp('${r.email}')">Fail</button>
+                            <button onclick="approve('${r.studentID}')">Pass</button>`;
+                userContainer.appendChild(row);
+            });
+        }
+
+        window.approve = function (code) {
+            const result = pending.find(p => p.studentID == code);
+            const emailTxt = `Congratulations! We are pleased to inform you that you have successfully passed the tryouts for the University of Mindanao Digos College Sports Department.
+
+At this stage, your application is now under final review by the administrative office. This process ensures that all selected candidates meet the academic and disciplinary requirements of the university.
+
+If you have no existing disciplinary records and maintain good academic standing, you don’t have to worry — your application is likely to be approved soon.
+
+Please wait for further updates regarding your official confirmation and next steps.
+
+Once again, congratulations on passing the tryouts, and we look forward to officially welcoming you to the UMDC Sports Department!
+
+Best regards,
+UMDC Sports Department
+University of Mindanao Digos College`;
+
+            if (!result) {
+                console.error("Student not found!");
+                return;
+            }
+            const formData = new FormData();
+            formData.append("code", result.studentID);
+            fetch('../../Server/updateStatus.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data == "Success") {
+                        formData.append("email", result.email);
+                        formData.append("text", emailTxt);
+                        fetch('../../Data/emailconfig.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+                                if (data == "Success") {
+                                    Swal.fire({
+                                        title: "Email Sent!",
+                                        text: "Student Has Been Approved Successfuly",
+                                        icon: "success"
+                                    });
+                                    console.log(data);
+                                    setTimeout(() => {
+                                        window.location.href = "";
+                                    }, 500);
+                                } else {
+                                    console.log(data);
+                                }
+                            })
+                    } else {
+                        console.log(data);
+                    }
+                })
+        }
+
+        window.popUp = function (email) {
+            document.getElementById('popUp').style.display = 'flex';
+            document.getElementById('popUp').innerHTML = `<div class="popUp">
+                <input type="hidden" id="emailHidden" name="email" value="${email}"> 
+            <div class="textHolderPopUp">
+                <h1>Are you sure?</h1>
+            </div>
+            <div class="inputContainerPopUp">
+                <textarea id="reason" placeholder="Declined Reason" name="text" required>We appreciate your interest in joining the UMDC Sports Department and for taking the time to submit your application. After a thorough review by the department and administrative office, we regret to inform you that your application has been declined at this time.
+
+This decision was made based on one or more administrative or academic concerns, such as low academic standing, a blocked student portal, or an existing disciplinary record. We encourage you to address these matters and reapply in the future once the issues have been resolved.
+
+We value your enthusiasm for representing our institution and wish you the best in your academic and athletic pursuits.</textarea>
+            </div>
+            <div class="btnContainerPopUp"><button>Confirm</button></div>
+        </div>`
+        };
+
+        document.getElementById('popUp').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            fetch('../../Data/emailconfig.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    if (data === "Success") {
+                        formData.append("Location", "tryout");
+                        document.getElementById('popUp').innerHTML = "";
+                        document.getElementById('popUp').style.display = "none"
+
+                        fetch('../../Server/deleteData.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+                                Swal.fire({
+                                    title: "Email Sent!",
+                                    text: "Student Has Been Removed Successfuly",
+                                    icon: "success"
+                                });
+                                console.log(data);
+                                setTimeout(() => {
+                                    window.location.href = "";
+                                }, 500);
+                            })
+                            .catch(Error => {
+                                console.log(Error);
+
+                            })
+                    }
+                })
+                .catch(Error => {
+                    console.log(Error);
+                })
+        })
+
+        function reloadData() {
+            const formData = new FormData(this);
+            fetch('../../Server/fetchPending.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    pending.length = 0;
+                    pending.push(...data);
+                    updateList();
+                })
+                .catch(Error => {
+                    console.log(Error);
+                })
+        }
+
+        window.onload = reloadData();
+    </script>
 </body>
 
 </html>

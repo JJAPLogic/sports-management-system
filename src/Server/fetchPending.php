@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 $pending = [];
 $winRate = 0;
 
-$sql = "SELECT * FROM pending WHERE Status = 'Passed'";
+$sql = "SELECT * FROM pending";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);

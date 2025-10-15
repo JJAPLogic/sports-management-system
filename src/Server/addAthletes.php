@@ -42,3 +42,5 @@ if(!empty($fn = $_POST['fullName'])&&
         echo "Success";
     }
 }
+
+?>

@@ -16,7 +16,7 @@ $_POST['birthDate']){
     $category = $_POST['category'];
     $bday = $_POST['birthDate'];
     $fullName = $fn." ".$mi.". ".$ln;
-    $Status = "Passed";
+    $Status = "Pending";
 
     $sql = "INSERT INTO pending (fullName, email, studentID, category, birthDate, Status)VALUES (:fullName, :email, :studentID, :category, :birthDate, :Status)";
     $stmt = $conn->prepare($sql);
