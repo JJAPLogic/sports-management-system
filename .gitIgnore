@@ -1,0 +1,58 @@
+# =====================================
+#  Node.js & JavaScript Dependencies
+# =====================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =====================================
+#  Environment & Sensitive Files
+# =====================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =====================================
+#  System Files
+# =====================================
+.DS_Store
+Thumbs.db
+
+# =====================================
+#  Logs & Temp Files
+# =====================================
+*.log
+logs/
+tmp/
+temp/
+
+# =====================================
+#  Build Outputs
+# =====================================
+dist/
+build/
+coverage/
+.cache/
+
+# =====================================
+#  VS Code & Editor Config
+# =====================================
+.vscode/
+*.code-workspace
+
+# =====================================
+#  PHP Specific
+# =====================================
+vendor/
+composer.lock
+
+# =====================================
+#  Miscellaneous
+# =====================================
+*.bak
+*.swp
+*.swo
+*.orig
